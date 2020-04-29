@@ -8,25 +8,16 @@ const userSchema = new Schema({
     password: String
 });
 
-// on save hook, encrypt password
-// before saving a model, run this function
-userSchema.pre('save', function (next) {
-    // get access to the user model
+userSchema.pre('save', async function(next){
+    //'this' refers to the current document about to be saved
     const user = this;
-
-    // generate a salt then run callback
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) { return next(err); }
-
-        // hash our password using the salt
-        bcrypt.hash(user.password, salt, null, (err, hash) => {
-            if (err) { return next(err); }
-
-            // overwrite plain text password with encrypted password
-            user.password = hash;
-            next();
-        });
-    });
+    //Hash the password with a salt round of 10, the higher the rounds the more secure, but the slower
+    //your application becomes.
+    const hash = await bcrypt.hash(user.password, 10);
+    //Replace the plain text password with the hash and then store it
+    user.password = hash;
+    //Indicates we're done and moves on to the next middleware
+    next();
 });
 
 userSchema.methods.comparePassword = function (candidatePassword, callback) {
@@ -38,7 +29,7 @@ userSchema.methods.comparePassword = function (candidatePassword, callback) {
 };
 
 // create the model class
-const model = mongoose.model('User', userSchema);
+const model = mongoose.model('user', userSchema);
 
 // export the model
 module.exports = model;

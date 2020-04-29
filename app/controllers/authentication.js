@@ -1,5 +1,5 @@
 const jwt = require('jwt-simple');
-const User = require('../models/user.js');
+const User = require('../models/user');
 const config = require('../../config');
 
 function tokenForUser(user) {
@@ -41,8 +41,6 @@ exports.signup = function(req, res, next) {
 
       // Respond to request indicating the user was created
       res.status(200).send({token: tokenForUser(user) });
-      return res.status(200).send({ error: 'Email already taken' });
-
     });
   });
 }

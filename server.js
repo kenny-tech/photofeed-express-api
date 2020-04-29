@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 });
 
 // require Photos routes
-require('./app/routes/photoRoutes.js')(app);
+require('./app/router')(app);
 
 // listen for requests
 app.listen(3000, () => {

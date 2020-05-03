@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 // define our model
 const userSchema = new Schema({
     email: { type: String, unique: true, lowercase: true },
+    username: { type: String, unique: true, lowercase: true },
+    name: String,
+    avatar: String,
     password: String
 });
 
@@ -20,13 +23,13 @@ userSchema.pre('save', async function(next){
     next();
 });
 
-// userSchema.methods.comparePassword = function (candidatePassword, callback) {
-//     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-//         if (err) { return callback(err); }
+userSchema.methods.comparePassword = function (candidatePassword, callback) {
+    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+        if (err) { return callback(err); }
 
-//         callback(null, isMatch);
-//     });
-// };
+        callback(null, isMatch);
+    });
+};
 
 
 // check to make sure that the user trying to log in has the correct credentials

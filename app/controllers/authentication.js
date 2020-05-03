@@ -36,21 +36,32 @@ exports.signin = async function (req, res, next) {
   // Send the user a token
   res.status(200).send({ 
     success: true,
-    user: {
+    data: {
       id: user.id,
       email: user.email,
       token: tokenForUser(user) 
     },
     message: 'success',
   });
+
+  // User has already had their email and password authenticated
+  // We just need to give them a token
+  // res.send({ token: tokenForUser(req.user) });
 }
 
 exports.signup = function(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
+  const name = req.body.name;
+  const username = req.body.username;
 
-  if (!email || !password) {
-    return res.status(422).send({ error: 'You must provide email and password'});
+  if (!email || !password || !name || !username ) {
+    // return res.status(422).send({ error: 'All fields are required'});
+    res.status(422).send({ 
+      success: false,
+      data: null,
+      message: 'All fields are required',
+    });
   }
 
   // See if a user with the given email exists
@@ -59,13 +70,20 @@ exports.signup = function(req, res, next) {
 
     // If a user with email does exist, return an error
     if (existingUser) {
-      return res.status(422).send({ error: 'Email already taken' });
+      // return res.status(422).send({ error: 'Email already taken' });
+      res.status(422).send({ 
+        success: false,
+        data: null,
+        message: 'Email already taken',
+      });
     }
 
     // If a user with email does NOT exist, create and save user record
     const user = new User({
       email: email,
-      password: password
+      password: password,
+      name: name,
+      username: username
     });
 
     user.save(function(err) {
@@ -74,9 +92,11 @@ exports.signup = function(req, res, next) {
       // Respond to request indicating the user was created
       res.status(200).send({ 
         success: true,
-        user: {
+        data: {
           id: user.id,
           email: user.email,
+          name: user.name,
+          username: user.username
         },
         message: 'Registration successful',
       });

@@ -7,10 +7,42 @@ function tokenForUser(user) {
   return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 
-exports.signin = function(req, res, next) {
-  // User has already had their email and password
-  // We just need to give them a token
-  res.send({ token: tokenForUser(req.user) });
+exports.signin = async function (req, res, next) {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  if (!email || !password) {
+    return res.status(422).send({ error: 'You must provide email and password'});
+  }
+
+  //Find the user associated with the email provided by the user
+  const user = await User.findOne({ email });
+
+  if( user===null ){
+    //If the user isn't found in the database, return a message
+    return res.status(422).send({ error: 'Invalid Email or Password'});
+  }
+  
+  //Validate password and make sure it matches with the corresponding hash stored in the database
+  //If the passwords match, it returns a value of true.
+  const validate = await user.isValidPassword(password);
+    
+  if( !validate ){
+    //If the user isn't found in the database, return a message
+    return res.status(422).send({ error: 'Invalid Email or Password'});
+  }
+  
+  // User email and password is valid
+  // Send the user a token
+  res.status(200).send({ 
+    success: true,
+    user: {
+      id: user.id,
+      email: user.email,
+      token: tokenForUser(user) 
+    },
+    message: 'success',
+  });
 }
 
 exports.signup = function(req, res, next) {
@@ -40,7 +72,8 @@ exports.signup = function(req, res, next) {
       if (err) { return next(err); }
 
       // Respond to request indicating the user was created
-      res.status(200).send({token: tokenForUser(user) });
+      // res.status(200).send({token: tokenForUser(user) });
+      res.status(200).send({message: 'Registration successful'});
     });
   });
 }

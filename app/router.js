@@ -17,7 +17,7 @@ module.exports = (app) => {
      // Retrieve a single photo with photoId
      app.get('/photos/:photoId', photos.findOne); 
 
-    app.post('/signin', requireSignin, Authentication.signin);
+    app.post('/signin', Authentication.signin);
     app.post('/signup', Authentication.signup);
 
     app.get('/', requireAuth, (req, res, next) => {

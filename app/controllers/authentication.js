@@ -72,8 +72,14 @@ exports.signup = function(req, res, next) {
       if (err) { return next(err); }
 
       // Respond to request indicating the user was created
-      // res.status(200).send({token: tokenForUser(user) });
-      res.status(200).send({message: 'Registration successful'});
+      res.status(200).send({ 
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+        message: 'Registration successful',
+      });
     });
   });
 }

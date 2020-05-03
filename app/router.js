@@ -21,6 +21,6 @@ module.exports = (app) => {
     app.post('/signup', Authentication.signup);
 
     app.get('/profile', requireAuth, (req, res, next) => {
-        res.send(['React', 'Redux', 'Node', 'Express', 'JWT']);
+        res.send('This is your profile');
     });
 };

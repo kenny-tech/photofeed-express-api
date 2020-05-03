@@ -39,6 +39,8 @@ exports.signin = async function (req, res, next) {
     data: {
       id: user.id,
       email: user.email,
+      name: user.name,
+      username: user.username,
       token: tokenForUser(user) 
     },
     message: 'success',

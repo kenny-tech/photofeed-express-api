@@ -85,35 +85,34 @@ exports.signin = async function (req, res, next) {
       data: null,
       message: 'Invalid Email or Password',
     });
+  } else {
+    //Validate password and make sure it matches with the corresponding hash stored in the database
+    //If the passwords match, it returns a value of true.
+    const validate = await user.isValidPassword(password);
+      
+    if( !validate ){
+      //If the user isn't found in the database, return a message
+      res.status(422).send({ 
+        success: false,
+        data: null,
+        message: 'Invalid Email or Password',
+      });
+    } else {
+      // User email and password is valid
+      // Send the user a token
+      res.status(200).send({ 
+        success: true,
+        data: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          username: user.username,
+          token: tokenForUser(user) 
+        },
+        message: 'success',
+      });
+    }
   }
-  
-  //Validate password and make sure it matches with the corresponding hash stored in the database
-  //If the passwords match, it returns a value of true.
-  const validate = await user.isValidPassword(password);
-    
-  if( !validate ){
-    //If the user isn't found in the database, return a message
-    res.status(422).send({ 
-      success: false,
-      data: null,
-      message: 'Invalid Email or Password',
-    });
-  }
-  
-  // User email and password is valid
-  // Send the user a token
-  res.status(200).send({ 
-    success: true,
-    data: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      username: user.username,
-      token: tokenForUser(user) 
-    },
-    message: 'success',
-  });
-
   // User has already had their email and password authenticated
   // We just need to give them a token
   // res.send({ token: tokenForUser(req.user) });

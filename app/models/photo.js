@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const PhotoSchema = mongoose.Schema({
-    user_id: String,
+    username: String,
     caption: String,
     posted: Number,
     url: String,

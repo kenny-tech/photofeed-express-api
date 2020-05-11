@@ -1,4 +1,6 @@
-const Photo = require('../models/photoModel.js')
+const fs = require('fs');
+const Photo = require('../models/photo')
+const User = require('../models/user')
 
 // Create a photo
 exports.create = (req, res) => {
@@ -10,24 +12,44 @@ exports.create = (req, res) => {
         })
     }
 
+
+    const userId = req.body.userId;
+    // const photo = {
+        
+    //     caption: req.body.caption,
+    //     posted: req.body.posted,
+    //     base64Image: req.body.base64Image
+    // }
+
+    const imageName = Date.now()+'.png';
+
+    // to declare some path to store your converted image
+    const path = './images/'+imageName;
+ 
+    const imgdata = req.body.base64Image;
+
+    // to convert base64 format into random filename
+    const base64Data = imgdata.replace(/^data:([A-Za-z-+/]+);base64,/, '');
+    
+    fs.writeFileSync(path, base64Data,  {encoding: 'base64'});
+    
+
+    // return res.send(imageName);
+
     // get photo from request
-    const photo = new Photo({
-        user_id: req.body.user_id,
+    const photoObj = new Photo({
+        username: req.body.username,
         caption: req.body.caption,
         posted: req.body.posted,
-        url: req.body.url
+        image: imageName
     });
 
-    // const photo = new Photo({
-    //     user_id: "gdgh7",
-    //     caption: "First caption",
-    //     posted: 12345,
-    //     url: "myfirstphoto.jpg"
-    // });
+    res.status(200).send(photoObj);
 
-    // save photo
-    photo.save()
-    .then(data => {
+    User.update(
+        { _id: userId }, 
+        { $push: { photo: photoObj } }    
+    ).then(data => {
         res.status(200).send(data);
     })
     .catch(err => {
@@ -35,6 +57,18 @@ exports.create = (req, res) => {
             message: err.message || "Some errors occured while saving the photo"
         });
     });
+
+
+    // save photo
+    // photo.save()
+    // .then(data => {
+    //     res.status(200).send(data);
+    // })
+    // .catch(err => {
+    //     res.status(500).send({
+    //         message: err.message || "Some errors occured while saving the photo"
+    //     });
+    // });
 };
 
 // Get all photos

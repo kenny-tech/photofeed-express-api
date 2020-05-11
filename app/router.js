@@ -6,7 +6,7 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
 module.exports = (app) => {
-    const photos = require('../app/controllers/photoController');
+    const photos = require('../app/controllers/photo');
 
      // Create a new photo
      app.post('/photos', photos.create);

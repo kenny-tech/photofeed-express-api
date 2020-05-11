@@ -2,13 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
+// import Photo schema
+const PhotoSchema = require('../models/photo').schema;
+
 // define our model
 const userSchema = new Schema({
     email: { type: String, unique: true, lowercase: true },
     username: { type: String, unique: true, lowercase: true },
     name: String,
     // avatar: String,
-    password: String
+    password: String,
+    photo: [PhotoSchema]
 });
 
 userSchema.pre('save', async function(next){

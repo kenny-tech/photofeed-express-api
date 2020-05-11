@@ -56,7 +56,7 @@ exports.signup = function(req, res, next) {
             name: user.name,
             username: user.username
           },
-          message: 'success',
+          message: 'Registration successful',
         });
       });
     }
@@ -109,7 +109,7 @@ exports.signin = async function (req, res, next) {
           username: user.username,
           token: tokenForUser(user) 
         },
-        message: 'success',
+        message: 'Login successful',
       });
     }
   }

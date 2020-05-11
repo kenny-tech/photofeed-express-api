@@ -38,10 +38,9 @@ exports.create = (req, res) => {
 
     // get photo from request
     const photoObj = new Photo({
-        username: req.body.username,
         caption: req.body.caption,
         posted: req.body.posted,
-        image: imageName
+        image: path
     });
 
     res.status(200).send(photoObj);

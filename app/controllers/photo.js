@@ -1,4 +1,5 @@
 const fs = require('fs');
+
 const Photo = require('../models/photo')
 const User = require('../models/user')
 
@@ -40,7 +41,7 @@ exports.create = (req, res) => {
     const photoObj = new Photo({
         caption: req.body.caption,
         posted: req.body.posted,
-        image: path
+        image: imageName
     });
 
     res.status(200).send(photoObj);

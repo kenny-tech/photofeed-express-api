@@ -41,6 +41,7 @@ exports.create = (req, res) => {
     const photoObj = new Photo({
         caption: req.body.caption,
         posted: req.body.posted,
+        username: req.body.username,
         image: imageName
     });
 
@@ -73,7 +74,8 @@ exports.create = (req, res) => {
 
 // Get all photos
 exports.findAll = (req, res) => {
-    Photo.find()
+    User.find()
+    .select('photo')
     .then(photos => {
         res.status(200).send(photos);
     })
@@ -83,6 +85,18 @@ exports.findAll = (req, res) => {
         })
     })
 }
+
+// exports.findAll = (req, res) => {
+//     Photo.find()
+//     .then(photos => {
+//         res.status(200).send(photos);
+//     })
+//     .catch(err => {
+//         res.status(500).send({
+//             message: err.message || "Some errors occured while retrieving photos"
+//         })
+//     })
+// }
 
 // Get a single photo
 exports.findOne = (req, res) => {

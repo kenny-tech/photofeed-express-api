@@ -22,6 +22,8 @@ exports.create = (req, res) => {
     //     base64Image: req.body.base64Image
     // }
 
+    
+
     const imageName = Date.now()+'.png';
 
     // to declare some path to store your converted image
@@ -38,31 +40,19 @@ exports.create = (req, res) => {
     // return res.send(imageName);
 
     // get photo from request
-    const photoObj = new Photo({
-        caption: req.body.caption,
-        posted: req.body.posted,
-        username: req.body.username,
-        image: imageName
-    });
+    // const photoObj = new Photo({
+    //     caption: req.body.caption,
+    //     posted: req.body.posted,
+    //     username: req.body.username,
+    //     image: imageName
+    // });
 
-    res.status(200).send(photoObj);
+    // res.status(200).send(photoObj);
 
-    User.update(
-        { _id: userId }, 
-        { $push: { photo: photoObj } }    
-    ).then(data => {
-        res.status(200).send(data);
-    })
-    .catch(err => {
-        res.status(500).send({
-            message: err.message || "Some errors occured while saving the photo"
-        });
-    });
-
-
-    // save photo
-    // photo.save()
-    // .then(data => {
+    // User.update(
+    //     { _id: userId }, 
+    //     { $push: { photo: photoObj } }    
+    // ).then(data => {
     //     res.status(200).send(data);
     // })
     // .catch(err => {
@@ -70,12 +60,37 @@ exports.create = (req, res) => {
     //         message: err.message || "Some errors occured while saving the photo"
     //     });
     // });
+
+    const photo = new Photo({
+        caption: req.body.caption,
+        posted: req.body.posted,
+        username: req.body.username,
+        userId: req.body.userId,
+        image: imageName,
+    });
+
+
+    // save photo
+    photo.save()
+    .then(data => {
+        res.status(200).send({
+            success: true,
+            data: data,
+            message: 'success',
+        });
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message || "Some errors occured while saving the photo"
+        });
+    });
 };
 
 // Get all photos
 exports.findAll = (req, res) => {
-    User.find()
-    .select('photo')
+    // User.find()
+    // .select('photo')
+    Photo.find()
     .then(photos => {
         res.status(200).send(photos);
     })

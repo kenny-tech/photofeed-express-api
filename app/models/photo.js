@@ -4,6 +4,7 @@ const PhotoSchema = mongoose.Schema({
     caption: String,
     posted: Number,
     username: String,
+    userId: String,
     image: String,
 }, {
     timestamps: true

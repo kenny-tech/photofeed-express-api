@@ -12,7 +12,7 @@ const userSchema = new Schema({
     name: String,
     // avatar: String,
     password: String,
-    photo: [PhotoSchema]
+    // photo: [PhotoSchema]
 });
 
 userSchema.pre('save', async function(next){

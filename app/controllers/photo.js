@@ -1,7 +1,16 @@
 const fs = require('fs');
+var cloudinary = require('cloudinary').v2;
+require("dotenv").config();
 
 const Photo = require('../models/photo')
 const User = require('../models/user')
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 
 // Create a photo
 exports.create = (req, res) => {
@@ -13,14 +22,7 @@ exports.create = (req, res) => {
         })
     }
 
-
     const userId = req.body.userId;
-    // const photo = {
-        
-    //     caption: req.body.caption,
-    //     posted: req.body.posted,
-    //     base64Image: req.body.base64Image
-    // }
 
     const imageName = Date.now()+'.png';
 
@@ -34,35 +36,57 @@ exports.create = (req, res) => {
     
     fs.writeFileSync(path, base64Data,  {encoding: 'base64'});
     
-
-    // return res.send(imageName);
+    // upload image to cloudinary
+    cloudinary.uploader.upload(path, function(err, result) {
+        if(err){
+            console.log("Error: ", err);
+            res.json({
+                err: err,
+                message: 'could not upload image, try again'
+            })
+        }
+        else {
+            console.log("Result: ", result);
+            // save image to db and return response
+            const photo = new Photo({
+                caption: req.body.caption,
+                posted: req.body.posted,
+                username: req.body.username,
+                userId: req.body.userId,
+                image: result.secure_url,
+            });
+        
+            // save photo
+            photo.save()
+            .then(data => {
+                res.status(200).send({
+                    success: true,
+                    data: data,
+                    message: 'success',
+                });
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some errors occured while saving the photo"
+                });
+            });
+        }
+    });
 
     // get photo from request
-    const photoObj = new Photo({
-        caption: req.body.caption,
-        posted: req.body.posted,
-        username: req.body.username,
-        image: imageName
-    });
+    // const photoObj = new Photo({
+    //     caption: req.body.caption,
+    //     posted: req.body.posted,
+    //     username: req.body.username,
+    //     image: imageName
+    // });
 
-    res.status(200).send(photoObj);
+    // res.status(200).send(photoObj);
 
-    User.update(
-        { _id: userId }, 
-        { $push: { photo: photoObj } }    
-    ).then(data => {
-        res.status(200).send(data);
-    })
-    .catch(err => {
-        res.status(500).send({
-            message: err.message || "Some errors occured while saving the photo"
-        });
-    });
-
-
-    // save photo
-    // photo.save()
-    // .then(data => {
+    // User.update(
+    //     { _id: userId }, 
+    //     { $push: { photo: photoObj } }    
+    // ).then(data => {
     //     res.status(200).send(data);
     // })
     // .catch(err => {
@@ -70,12 +94,15 @@ exports.create = (req, res) => {
     //         message: err.message || "Some errors occured while saving the photo"
     //     });
     // });
+
+    
 };
 
 // Get all photos
 exports.findAll = (req, res) => {
-    User.find()
-    .select('photo')
+    // User.find()
+    // .select('photo')
+    Photo.find()
     .then(photos => {
         res.status(200).send(photos);
     })

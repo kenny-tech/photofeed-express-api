@@ -51,12 +51,7 @@ exports.signup = function(req, res, next) {
         // Respond to request indicating the user was created
         res.status(200).send({ 
           success: true,
-          data: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            username: user.username
-          },
+          data: user,
           message: 'Registration successful',
         });
       });

@@ -5,9 +5,11 @@ const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
-module.exports = (app) => {
-    const photos = require('../app/controllers/photo');
+const photos = require('../app/controllers/photo');
+const user = require('../app/controllers/user');
 
+module.exports = (app) => {
+    
      // Create a new photo
      app.post('/photos', photos.create);
 
@@ -22,7 +24,9 @@ module.exports = (app) => {
 
     app.post('/signup', Authentication.signup);
 
-    app.get('/profile', requireAuth, (req, res, next) => {
-        res.send('This is your profile');
-    });
+    app.put('/updateProfile/:userId', user.updateProfile);
+
+    // app.get('/profile', requireAuth, (req, res, next) => {
+    //     res.send('This is your profile');
+    // });
 };

@@ -3,8 +3,9 @@ const User = require('../models/user');
 const config = require('../../config');
 
 function tokenForUser(user) {
+  let expires = (Date.now() / 1000) + 60 * 30;
   const timestamp = new Date().getTime();
-  return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
+  return jwt.encode({ sub: user.id, iat: timestamp, exp: expires }, config.secret);
 }
 
 exports.signup = function(req, res, next) {

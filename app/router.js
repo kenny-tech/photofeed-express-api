@@ -7,6 +7,7 @@ const requireSignin = passport.authenticate('local', { session: false });
 
 const photos = require('../app/controllers/photo');
 const user = require('../app/controllers/user');
+const comment = require('../app/controllers/comment')
 
 module.exports = (app) => {
     
@@ -25,6 +26,9 @@ module.exports = (app) => {
     app.post('/signup', Authentication.signup);
 
     app.put('/updateProfile/:userId', user.updateProfile);
+
+    // Create a comment
+    app.post('/comments', comment.create);
 
     // app.get('/profile', requireAuth, (req, res, next) => {
     //     res.send('This is your profile');

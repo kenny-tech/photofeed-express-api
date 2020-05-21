@@ -2,7 +2,7 @@ const User = require('../models/user')
 
 exports.updateProfile = (req, res) => {
 
-    User.findByIdAndUpdate(req.params.userId, req.body, function(err, user) {
+    User.findByIdAndUpdate(req.params.userId, req.body, {new: true}, function(err, user) {
         if (err) {
             res.status(422).send({ 
                 success: false,
@@ -12,7 +12,7 @@ exports.updateProfile = (req, res) => {
         } else {
             res.status(200).send({ 
                 success: true,
-                data: req.body,
+                data: user,
                 message: 'Profile successfully updated',
             });
         }

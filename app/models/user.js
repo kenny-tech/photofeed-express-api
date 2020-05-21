@@ -11,7 +11,7 @@ const userSchema = new Schema({
     username: { type: String, unique: true, lowercase: true },
     name: String,
     // avatar: String,
-    password: String,
+    password: { type: String, select: false },
     // photo: [PhotoSchema]
 });
 

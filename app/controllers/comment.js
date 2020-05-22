@@ -31,6 +31,29 @@ exports.create = (req, res) => {
             });
         });
     }
+}
 
-
+exports.findOne = (req, res) => {
+    Comment.find({photoId: req.params.photoId})
+    .then(comment => {
+        console.log(comment);
+        if(!comment) {
+            res.status(422).send({ 
+                success: false,
+                data: null,
+                message: 'No comment found',
+            });
+        } else {
+            res.status(200).send({ 
+                success: true,
+                data: comment,
+                message: 'success',
+            });
+        }
+    })
+    .catch(err => {
+        return res.status(500).send({
+            message: "Error retrieving comment with photo id " + req.params.photoId
+        })
+    })
 }

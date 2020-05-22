@@ -30,6 +30,9 @@ module.exports = (app) => {
     // Create a comment
     app.post('/comments', comment.create);
 
+    // Get a comment
+    app.get('/comments/:photoId', comment.findOne); 
+
     // app.get('/profile', requireAuth, (req, res, next) => {
     //     res.send('This is your profile');
     // });

@@ -36,7 +36,7 @@ exports.create = (req, res) => {
 exports.findOne = (req, res) => {
     Comment.find({photoId: req.params.photoId}).sort({createdAt: 'desc'})
     .then(comment => {
-        console.log(comment);
+        // console.log(comment);
         if(!comment) {
             res.status(422).send({ 
                 success: false,

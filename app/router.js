@@ -33,6 +33,9 @@ module.exports = (app) => {
     // Get a comment
     app.get('/comments/:photoId', comment.findOne); 
 
+    // Get user photos
+    app.get('/userPhotos/:userId', photos.finduserPhotos); 
+
     // app.get('/profile', requireAuth, (req, res, next) => {
     //     res.send('This is your profile');
     // });

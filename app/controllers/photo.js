@@ -113,17 +113,31 @@ exports.findAll = (req, res) => {
     })
 }
 
-// exports.findAll = (req, res) => {
-//     Photo.find()
-//     .then(photos => {
-//         res.status(200).send(photos);
-//     })
-//     .catch(err => {
-//         res.status(500).send({
-//             message: err.message || "Some errors occured while retrieving photos"
-//         })
-//     })
-// }
+// Get a single photo
+exports.finduserPhotos = (req, res) => {
+    Photo.find({userId: req.params.userId}).select('image')
+    .then(photo => {
+        console.log('Photo: ',photo);
+        if(photo.length == 0) {
+            res.status(422).send({ 
+                success: false,
+                data: null,
+                message: 'No photo found for user id ' + req.params.userId,
+            });
+        } else {
+            res.status(200).send({ 
+                success: true,
+                data: photo,
+                message: 'success',
+            });
+        }
+    })
+    .catch(err => {
+        return res.status(500).send({
+            message: "Error retrieving photo with user id " + req.params.userId
+        })
+    })
+}
 
 // Get a single photo
 exports.findOne = (req, res) => {

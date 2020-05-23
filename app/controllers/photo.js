@@ -100,8 +100,6 @@ exports.create = (req, res) => {
 
 // Get all photos
 exports.findAll = (req, res) => {
-    // User.find()
-    // .select('photo')
     Photo.find()
     .then(photos => {
         res.status(200).send(photos);

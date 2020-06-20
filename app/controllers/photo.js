@@ -56,6 +56,9 @@ exports.create = (req, res) => {
                 image: result.secure_url,
             });
         
+            // Delete image from images folder
+            fs.unlinkSync(path);
+
             // save photo
             photo.save()
             .then(data => {
